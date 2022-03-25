@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3.9.14-alpine
+    ports:
+      - "5672:5672"
+    restart: always
+  loader:
+    build: services/loader
+    environment:
+      - IMAGE_FOLDER=/data/input
+      - ALLOWED_FORMATS=bmp,jpeg,png,tiff,gif,webp
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_REQUEST_QUEUE=requests
+      - WAIT_BETWEEN_SCANS_SEC=10
+    volumes:
+      - ./data:/data
+    restart: always
+    depends_on:
+      - rabbitmq
+  detector:
+    build: services/detector
+    volumes:
+      - ./data:/data
+    environment:
+      - IMAGE_FOLDER=/data/input
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_REQUEST_QUEUE=requests
+      - RABBITMQ_RESPONSE_QUEUE=responses
+    restart: always
+    depends_on:
+      - rabbitmq
+  saver:
+    build: services/saver
+    volumes:
+      - ./data:/data
+    environment:
+      - IMAGE_FOLDER=/data/input
+      - OUTPUT_FOLDER=/data/output
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_RESPONSE_QUEUE=responses
+    restart: always
+    depends_on:
+      - rabbitmq

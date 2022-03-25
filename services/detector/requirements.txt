@@ -1,0 +1,6 @@
+pika==1.2.0
+numpy==1.22.3
+scipy==1.8.0
+opencv-python-headless==4.5.5.64
+environ-config==21.2.0
+backoff==1.11.1

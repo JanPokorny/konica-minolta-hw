@@ -18,6 +18,8 @@ After the system starts up, you can observe that the images from `data/input` mo
 
 This project uses [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/overview/) to run a system of 4 microservices. (Using Kubernetes would be possible, but the YAMLs would be longer than the actual code.) The microservices all use the official [base Python image](https://hub.docker.com/_/python/) and run simple Python scripts communicating with each other using [RabbitMQ](https://www.rabbitmq.com/).
 
+The services use exponential back-off to retry failed connections. The missed connection attempts are still logged, but do not indicate a problem since it takes a few seconds for RabbitMQ to start up.
+
 ## Descriptions of the microservices
 
 ### RabbitMQ
